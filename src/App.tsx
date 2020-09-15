@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import './App.css';
 import {TaskType, TodoList} from "./components/Todolist/Todolist";
 import {v1} from 'uuid';
 import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
+import MenuIcon from '@material-ui/icons/Menu';
 
 export type FilterValuesType = "all" | "active" | "completed"
 type TodolistType = {
@@ -54,6 +55,7 @@ function App() {
         // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
         setTasks({...tasks})
     }
+
     function changeFilter(value: FilterValuesType, todolistId: string) {
         let todolist = todolists.find(tl => tl.id === todolistId)
         if (todolist) {
@@ -61,6 +63,7 @@ function App() {
             setTodolists([...todolists])
         }
     }
+
     function addTask(title: string, todolistId: string) {
         let task = {id: v1(), title: title, isDone: false}
         // достанем нужный массив по todolistId
@@ -70,6 +73,7 @@ function App() {
         // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
         setTasks({...tasks})
     }
+
     function changeStatus(id: string, isDone: boolean, todolistId: string) {
         // достанем нужный массив по todolistId
         let todolistTasks = tasks[todolistId]
@@ -82,6 +86,7 @@ function App() {
             setTasks({...tasks})
         }
     }
+
     function removeTodolist(id: string) {
         // засунем в стейт список тудулистов, id которых не равны тому, который нужно выкинуть
         setTodolists(todolists.filter(tl => tl.id != id))
@@ -90,12 +95,14 @@ function App() {
         // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
         setTasks({...tasks})
     }
-    function addTodolist (title: string) {
+
+    function addTodolist(title: string) {
         let newTodolistId = v1()
         let newTodolist: TodolistType = {id: newTodolistId, title: title, filter: "all"}
         setTodolists([newTodolist, ...todolists])
         setTasks({...tasks, [newTodolistId]: []})
     }
+
     function changeTaskTitle(id: string, newTitle: string, todolistId: string) {
         let task = tasks[todolistId].find(t => t.id === id)
         if (task) {
@@ -103,6 +110,7 @@ function App() {
             setTasks({...tasks})
         }
     }
+
     function changeTodolistTitle(todolistId: string, newTitle: string) {
         let todolist = todolists.find(t => t.id === todolistId)
         if (todolist) {
@@ -113,32 +121,48 @@ function App() {
 
     return (
         <div className="App">
-            <AddItemForm addItem={addTodolist}/>
-            {todolists.map(tl => {
-                let allTodolistTasks = tasks[tl.id]
-                let tasksForTodolist = allTodolistTasks
-                if (tl.filter === "active") {
-                    tasksForTodolist = allTodolistTasks.filter(t => t.isDone === false)
-                }
-                if (tl.filter === "completed") {
-                    tasksForTodolist = allTodolistTasks.filter(t => t.isDone === true)
-                }
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton edge="start" color="inherit" aria-label="menu">
+                        <MenuIcon/>
+                    </IconButton>
+                    <Typography variant="h6">
+                        News
+                    </Typography>
+                    <Button color="inherit">Login</Button>
+                </Toolbar>
+            </AppBar>
+            <Container fixed>
+                <Grid container style={{padding: "20px"}}>
+                    <AddItemForm addItem={addTodolist}/>
+                </Grid>
+                <Grid container spacing={3}>
+                    {todolists.map(tl => {
+                        let allTodolistTasks = tasks[tl.id]
+                        let tasksForTodolist = allTodolistTasks
+                        if (tl.filter === "active") {
+                            tasksForTodolist = allTodolistTasks.filter(t => t.isDone === false)
+                        }
+                        if (tl.filter === "completed") {
+                            tasksForTodolist = allTodolistTasks.filter(t => t.isDone === true)
+                        }
 
-                return <TodoList key={tl.id}
-                                 id={tl.id}
-                                 title={tl.title}
-                                 tasks={tasksForTodolist}
-                                 removeTask={removeTask}
-                                 changeFilter={changeFilter}
-                                 addTask={addTask}
-                                 changeTaskStatus={changeStatus}
-                                 filter={tl.filter}
-                                 removeTodolist={removeTodolist}
-                                 changeTaskTitle={changeTaskTitle}
-                                 changeTodolistTitle={changeTodolistTitle}
-                />
-            })}
-
+                        return <Grid item>
+                            <Paper style={{padding: "10px"}}><TodoList key={tl.id}
+                                             id={tl.id}
+                                             title={tl.title}
+                                             tasks={tasksForTodolist}
+                                             removeTask={removeTask}
+                                             changeFilter={changeFilter}
+                                             addTask={addTask}
+                                             changeTaskStatus={changeStatus}
+                                             filter={tl.filter}
+                                             removeTodolist={removeTodolist}
+                                             changeTaskTitle={changeTaskTitle}
+                                             changeTodolistTitle={changeTodolistTitle}
+                            /></Paper>
+                        </Grid>
+                    })}</Grid></Container>
         </div>
     );
 }
