@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import React, {ChangeEvent} from "react";
 import {FilterValuesType} from "../../App"
 import '../../App.module.css';
 import {AddItemForm} from "../AddItemForm/AddItemForm";

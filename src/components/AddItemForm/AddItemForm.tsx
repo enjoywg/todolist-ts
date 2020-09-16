@@ -1,7 +1,7 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import '../../App.module.css';
-import {Button, IconButton, TextField} from "@material-ui/core";
-import {AddBox, TextFields} from "@material-ui/icons";
+import {IconButton, TextField} from "@material-ui/core";
+import {AddBox} from "@material-ui/icons";
 
 type AddItemFormType = {
     addItem: (title: string) => void
