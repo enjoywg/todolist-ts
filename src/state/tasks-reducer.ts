@@ -1,9 +1,9 @@
-import {FilterValuesType, TasksStateType} from "../App";
+import {TasksStateType} from "../App";
 import {v1} from "uuid";
 import {AddTodolistActionType, RemoveTodolistActionType} from "./todolists-reducer";
 
 type ActionsType = RemoveTaskActionType | AddTaskActionType | ChangeTaskTitleActionType | ChangeTaskStatusActionType
-| AddTodolistActionType | RemoveTodolistActionType
+    | AddTodolistActionType | RemoveTodolistActionType
 
 export type RemoveTaskActionType = {
     type: 'REMOVE-TASK',
@@ -43,27 +43,20 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
                 [action.todolistId]: [{id: v1(), title: action.title, isDone: false}, ...state[action.todolistId]]
             }
         case 'CHANGE-TASK-TITLE': {
-            let stateCopy = {...state}
-            let tasks = stateCopy[action.todolistId]
-            let task = tasks.find(t => t.id === action.taskId)
-            if (task) {
-                task.title = action.newTitle
-            }
-            return stateCopy
+            let tasks = state[action.todolistId]
+            state[action.todolistId] = tasks.map(t => t.id === action.taskId
+                ? {...t, title: action.newTitle}
+                : t)
+            return {...state}
         }
         case 'CHANGE-TASK-STATUS': {
-            let stateCopy = {...state}
-            let tasks = stateCopy[action.todolistId]
-            let task = tasks.find(t => t.id === action.taskId)
-            if (task) {
-                task.isDone = action.isDone
-            }
-            return stateCopy
+            let tasks = state[action.todolistId]
+            state[action.todolistId] = tasks.map(t => t.id === action.taskId
+                ? {...t, isDone: action.isDone}
+                : t)
+            return {...state}
         }
         case 'ADD-TODOLIST': {
-            //let stateCopy = {...state}
-            //stateCopy[action.todolistId] = []
-
             return {...state, [action.todolistId]: []}
         }
         case 'REMOVE-TODOLIST': {
